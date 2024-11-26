@@ -146,29 +146,7 @@
                                 })
                                 .catch(err => console.error('Error fetching transactions: ', err));
 
-                            // Fetch liabilities
-                            fetch('/api/get-liabilities', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ access_token: accessToken })
-                            })
-                                .then(response => response.json())
-                                .then(liabilityData => {
-                                    const liabilities = liabilityData.liabilities || [];
-                                    const liabilityDetailsElement = document.getElementById('liability-details');
-                                    liabilityDetailsElement.innerHTML = ''; // Clear previous data
-                                    liabilities.forEach(liability => {
-                                        const row = document.createElement('tr');
-                                        row.innerHTML = `
-                                            <td>${liability.name}</td>
-                                            <td>${liability.type}</td>
-                                            <td>$${liability.balance}</td>
-                                        `;
-                                        liabilityDetailsElement.appendChild(row);
-                                    });
-                                    document.getElementById('liabilities').style.display = 'block';
-                                })
-                                .catch(err => console.error('Error fetching liabilities: ', err));
+
 
                         })
                         .catch(err => console.error('Error exchanging public token: ', err));

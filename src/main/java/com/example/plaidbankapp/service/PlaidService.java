@@ -56,7 +56,7 @@ public class PlaidService {
         LinkTokenCreateRequest request = new LinkTokenCreateRequest()
                 .user(user)
                 .clientName("PlaidBankApp")
-                .products(List.of(Products.AUTH, Products.TRANSACTIONS, Products.LIABILITIES))
+                .products(List.of(Products.AUTH, Products.TRANSACTIONS))
                 .countryCodes(List.of(CountryCode.US))
                 .language("en");
 
@@ -114,7 +114,7 @@ public class PlaidService {
     }
 
     // Method to get liabilities using the access token
-    public Map<String, Object> getLiabilities(String accessToken) throws Exception {
+    /**public Map<String, Object> getLiabilities(String accessToken) throws Exception {
         LiabilitiesGetRequest request = new LiabilitiesGetRequest()
                 .accessToken(accessToken);
 
@@ -125,6 +125,6 @@ public class PlaidService {
             throw new RuntimeException("Failed to get liabilities: " +
                     (response.errorBody() != null ? response.errorBody().string() : "Unknown error"));
         }
-    }
+    }*/
 }
 

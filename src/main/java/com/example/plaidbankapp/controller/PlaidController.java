@@ -43,9 +43,9 @@ public class PlaidController {
     }
 
     // Endpoint to fetch user liabilities
-    @PostMapping("/api/get-liabilities")
+    /**@PostMapping("/api/get-liabilities")
     public Map<String, Object> getLiabilities(@RequestBody Map<String, String> requestBody) throws Exception {
         String accessToken = requestBody.get("access_token");
         return plaidService.getLiabilities(accessToken);
-    }
+    }*/
 }
