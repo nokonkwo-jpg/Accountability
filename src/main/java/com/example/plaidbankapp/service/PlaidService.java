@@ -1,8 +1,11 @@
 package com.example.plaidbankapp.service;
 
+import com.example.plaidbankapp.entity.Transaction;
+import com.example.plaidbankapp.repo.TransactionRepository;
 import com.plaid.client.ApiClient;
 import com.plaid.client.model.*;
 import com.plaid.client.request.PlaidApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
@@ -10,14 +13,17 @@ import retrofit2.Response;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaidService {
     private final PlaidApi plaidApi;
+    @Autowired
+    private final TransactionRepository transactionRepository;
 
     public PlaidService(@Value("${plaid.client_id}") String clientId,
                         @Value("${plaid.secret}") String secret,
-                        @Value("${plaid.env}") String environment) {
+                        @Value("${plaid.env}") String environment, TransactionRepository transactionRepository) {
         // Define the environment
         String basePath;
         switch (environment.toLowerCase()) {
@@ -46,6 +52,7 @@ public class PlaidService {
         apiClient.setPlaidAdapter(basePath);
 
         this.plaidApi = apiClient.createService(PlaidApi.class);
+        this.transactionRepository = transactionRepository;
     }
 
     // Method to create a Link Token for Plaid Link
@@ -106,6 +113,20 @@ public class PlaidService {
 
         Response<TransactionsGetResponse> response = plaidApi.transactionsGet(request).execute();
         if (response.isSuccessful() && response.body() != null) {
+            //Save transactions to DB
+            List<Transaction> transactionsList = response.body().getTransactions().stream().map(transaction -> {
+                Transaction tx = new Transaction();
+                tx.setPlaidTransactionId(transaction.getTransactionId());
+                tx.setAmount(transaction.getAmount());
+                tx.setCategory(String.valueOf(transaction.getCategory()));
+                tx.setDate(transaction.getDate());
+                tx.setName(transaction.getName());
+                return tx;
+            })
+                    .toList();
+
+            transactionRepository.saveAll(transactionsList);
+
             return Map.of("transactions", response.body().getTransactions());
         } else {
             throw new RuntimeException("Failed to get transactions: " +

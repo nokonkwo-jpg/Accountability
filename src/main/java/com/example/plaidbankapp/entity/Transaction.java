@@ -14,6 +14,8 @@ public class Transaction {
     private String name;
     private Double amount;
     private LocalDate date;
+    private String merchant;
+    private String category;
 
     @ManyToOne
     private Account account;
@@ -66,5 +68,18 @@ public class Transaction {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public String getMerchant() {
+        return merchant;
+    }
+    public void setMerchant(String merchant) {
+        this.merchant = merchant;
+    }
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
